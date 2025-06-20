@@ -1,0 +1,7 @@
+img {
+	padding: 0px 20px;
+}
+
+.image-list {
+	display: flex;
+}
