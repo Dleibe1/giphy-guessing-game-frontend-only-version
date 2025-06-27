@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { fetchGiphy } from '../../apiClient/fetchGiphy/fetchGiphy'
+import { fetchGiphy } from '../../apiClient/GIPHY/fetchGiphy'
+import { getWordData } from '../../apiClient/FreeDictionaryAPI/getWordData'
+import { shouldDisplayWordText } from '../../apiClient/FreeDictionaryAPI/shouldDisplayWordText'
 import './ImageList.css'
 
 interface WordItem {
   wordText: string
-  giphyURL: string
+  giphyURL: string | null
 }
 
 const ImageList = () => {
@@ -20,19 +22,27 @@ const ImageList = () => {
   ): Promise<void> => {
     if (event.key === ' ') {
       const wordText = currentWord.trim()
-      const giphyResponse = await fetchGiphy(wordText)
-      console.log(giphyResponse)
-      const giphyURL = giphyResponse.data[0].images.fixed_height.url
+      let giphyURL = null
+      const wordData = await getWordData(wordText)
+      let displayWordText = shouldDisplayWordText(wordData)
+      if (!displayWordText) {
+        const giphyResponse = await fetchGiphy(wordText)
+        if (giphyResponse.data.length){
+          giphyURL = giphyResponse.data[0].images.fixed_height.url
+        }
+      }
       setWords([...words, { wordText, giphyURL }])
       setCurrentWord('')
     }
   }
 
   const imageList = words.map((word, i) => {
-    if (word.giphyURL.length) {
+    if (word.giphyURL !== null) {
       return (
         <img key={`${i}${word.wordText}${word.giphyURL}`} src={word.giphyURL} />
       )
+    } else {
+      return <p key={`${i}${word.wordText}`}>{word.wordText}</p>
     }
   })
 

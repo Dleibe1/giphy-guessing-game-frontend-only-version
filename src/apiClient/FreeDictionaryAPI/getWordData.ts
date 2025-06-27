@@ -1,8 +1,7 @@
-export const fetchGiphy = async (searchTerm: string) => {
-  const giphyApiKey = import.meta.env.VITE_GIPHY_API_KEY
+export const getWordData = async (word: string) => {
   try {
     const response = await fetch(
-      `https://api.giphy.com/v1/stickers/search?api_key=${giphyApiKey}&q=${searchTerm}&limit=1`
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
     )
     if (!response.ok) {
       const errorMessage = `${response.status} (${response.statusText})`
