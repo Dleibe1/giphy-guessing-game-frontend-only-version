@@ -1,16 +1,21 @@
 export const shouldDisplayWordText = (
   wordData: { title: string } | Array<{ meanings?: { partOfSpeech: string }[] }>
 ) => {
-  if(wordData === undefined) {
-    return false
+  if (
+    wordData === undefined ||
+    (!Array.isArray(wordData) && wordData.title === 'No Definitions Found')
+  ) {
+    return true
   }
-  const disallowedPartsOfSpeech = ['conjunction', 'adverb', 'preposition']
+  const disallowedPartsOfSpeech = ['conjunction', 'adverb', 'preposition', 'interjection']
   if (Array.isArray(wordData)) {
     for (const entry of wordData) {
       if (!entry.meanings) {
         continue
       }
-      const partsOfSpeech = entry.meanings.map((meaning) => meaning.partOfSpeech)
+      const partsOfSpeech = entry.meanings.map(
+        (meaning) => meaning.partOfSpeech
+      )
       const hasDisallowedPartOfSpeech = partsOfSpeech.some((partOfSpeech) =>
         disallowedPartsOfSpeech.includes(partOfSpeech)
       )

@@ -27,7 +27,7 @@ const ImageList = () => {
       let displayWordText = shouldDisplayWordText(wordData)
       if (!displayWordText) {
         const giphyResponse = await fetchGiphy(wordText)
-        if (giphyResponse.data.length){
+        if (giphyResponse.data.length) {
           giphyURL = giphyResponse.data[0].images.fixed_height.url
         }
       }
@@ -36,10 +36,23 @@ const ImageList = () => {
     }
   }
 
+  const handleImageClick = (index: number) => {
+    const wordItems = [...words]
+    wordItems[index] = {
+      giphyURL: null,
+      wordText: wordItems[index].wordText,
+    }
+    setWords(wordItems)
+  }
+
   const imageList = words.map((word, i) => {
     if (word.giphyURL !== null) {
       return (
-        <img key={`${i}${word.wordText}${word.giphyURL}`} src={word.giphyURL} />
+        <img
+          key={`${i}${word.wordText}${word.giphyURL}`}
+          src={word.giphyURL}
+          onClick={() => handleImageClick(i)}
+        />
       )
     } else {
       return <p key={`${i}${word.wordText}`}>{word.wordText}</p>
