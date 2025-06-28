@@ -7,7 +7,6 @@ export const shouldDisplayWordText = (
   ) {
     return false
   }
-  console.log(wordData)
   const disallowedPartsOfSpeech = ['conjunction', 'adverb', 'preposition', 'interjection']
   if (Array.isArray(wordData)) {
     for (const entry of wordData) {

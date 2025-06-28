@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import { getWordData } from '../../apiClient/FreeDictionaryAPI/getWordData'
 import { shouldDisplayWordText } from '../../apiClient/FreeDictionaryAPI/shouldDisplayWordText'
-import { GiphyFetch } from '@giphy/js-fetch-api'
+import {
+  getAnimatedText,
+  getGiphyImage,
+} from '../../apiClient/GIPHY/getGiphyImageURL'
 import './ImageList.css'
 
 interface WordItem {
@@ -24,12 +27,11 @@ const ImageList = () => {
       const wordText = currentWord.trim()
       let giphyURL = null
       const wordData = await getWordData(wordText)
-      let displayWordText = shouldDisplayWordText(wordData)
-      if (!displayWordText) {
-        const giphyResponse = await fetchGiphy(wordText)
-        if (giphyResponse.data.length) {
-          giphyURL = giphyResponse.data[0].images.fixed_height.url
-        }
+      const displayWordText: boolean = shouldDisplayWordText(wordData)
+      if (displayWordText) {
+        giphyURL = await getAnimatedText(wordText)
+      } else {
+        giphyURL = await getGiphyImage(wordText)
       }
       setWords([...words, { wordText, giphyURL }])
       setCurrentWord('')
