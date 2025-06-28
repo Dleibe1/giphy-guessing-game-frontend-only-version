@@ -5,8 +5,9 @@ export const shouldDisplayWordText = (
     wordData === undefined ||
     (!Array.isArray(wordData) && wordData.title === 'No Definitions Found')
   ) {
-    return true
+    return false
   }
+  console.log(wordData)
   const disallowedPartsOfSpeech = ['conjunction', 'adverb', 'preposition', 'interjection']
   if (Array.isArray(wordData)) {
     for (const entry of wordData) {

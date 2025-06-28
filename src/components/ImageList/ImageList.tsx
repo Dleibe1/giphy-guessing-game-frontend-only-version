@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { fetchGiphy } from '../../apiClient/GIPHY/fetchGiphy'
+import React, { useState } from 'react'
 import { getWordData } from '../../apiClient/FreeDictionaryAPI/getWordData'
 import { shouldDisplayWordText } from '../../apiClient/FreeDictionaryAPI/shouldDisplayWordText'
+import { GiphyFetch } from '@giphy/js-fetch-api'
 import './ImageList.css'
 
 interface WordItem {
