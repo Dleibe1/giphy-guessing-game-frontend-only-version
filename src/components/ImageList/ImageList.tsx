@@ -5,7 +5,7 @@ import {
   getAnimatedText,
   getGiphyImage,
 } from '../../apiClient/GIPHY/getGiphyImageURL'
-import './ImageList.css'
+import './ImageList.scss'
 
 interface WordItem {
   wordText: string
@@ -23,7 +23,7 @@ const ImageList = () => {
   const onKeyDown = async (
     event: React.KeyboardEvent<HTMLInputElement>
   ): Promise<void> => {
-    if (event.key === ' ') {
+    if (event.key === ' ' || event.key === '.') {
       const wordText = currentWord.trim()
       let giphyURL = null
       const wordData = await getWordData(wordText)
@@ -51,6 +51,7 @@ const ImageList = () => {
     if (word.giphyURL !== null) {
       return (
         <img
+          className="gif-image slide-left"
           key={`${i}${word.wordText}${word.giphyURL}`}
           src={word.giphyURL}
           onClick={() => handleImageClick(i)}
@@ -63,7 +64,6 @@ const ImageList = () => {
 
   return (
     <>
-      <div className="image-list">{imageList}</div>
       <div className="word-input">
         <input
           type="text"
@@ -72,6 +72,7 @@ const ImageList = () => {
           onKeyDown={onKeyDown}
         />
       </div>
+      <div className="image-list">{imageList}</div>
     </>
   )
 }

@@ -1,5 +1,4 @@
 import { GiphyFetch } from '@giphy/js-fetch-api'
-import { shouldDisplayWordText } from '../FreeDictionaryAPI/shouldDisplayWordText'
 
 const gf = new GiphyFetch(import.meta.env.VITE_GIPHY_API_KEY)
 
@@ -21,10 +20,10 @@ export const getAnimatedText = async (wordText: string) => {
 export const getGiphyImage = async (wordText: string) => {
   try {
     const { data: gifs } = await gf.search(wordText, {
-      sort: 'relevant',
-      type: 'stickers',
       limit: 1,
+      // rating: 'r'
     })
+    console.log(gifs)
     const imageURLs = gifs.map((gif) => {
       return gif.images.fixed_height.url
     })

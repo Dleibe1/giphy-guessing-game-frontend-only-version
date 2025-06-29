@@ -1,0 +1,36 @@
+img {
+  padding: 0px 10px;
+  max-width: 300px;
+}
+
+.image-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+p {
+  color: #ffffff;
+  margin: 0px 10px;
+  font-size: 90px;
+}
+
+.gif-img {
+  max-width: 300px;
+}
+
+.slide-left {
+  animation-name: slide-left;
+  animation-duration: 0.3s;
+}
+
+@keyframes slide-left {
+  0% {
+    transform: translateX(300px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
