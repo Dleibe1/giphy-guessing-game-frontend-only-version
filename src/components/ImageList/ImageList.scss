@@ -1,5 +1,5 @@
 img {
-  padding: 0px 10px;
+  margin: 5px;
   max-width: 300px;
 }
 
@@ -15,10 +15,6 @@ p {
   font-size: 90px;
 }
 
-.gif-img {
-  max-width: 300px;
-}
-
 .slide-left {
   animation-name: slide-left;
   animation-duration: 0.3s;
@@ -32,5 +28,18 @@ p {
   100% {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+.fade-out {
+  animation: fade-out 0.7s forwards;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }

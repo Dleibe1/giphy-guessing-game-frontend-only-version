@@ -20,8 +20,8 @@ export const getAnimatedText = async (wordText: string) => {
 export const getGiphyImage = async (wordText: string) => {
   try {
     const { data: gifs } = await gf.search(wordText, {
+      sort: 'relevant',
       limit: 1,
-      // rating: 'r'
     })
     console.log(gifs)
     const imageURLs = gifs.map((gif) => {

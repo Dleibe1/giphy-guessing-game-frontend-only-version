@@ -38,12 +38,11 @@ const ImageList = () => {
     }
   }
 
-  const handleImageClick = (index: number) => {
+  const handleImageClick = async (index: number) => {
     const wordItems = [...words]
-    wordItems[index] = {
-      giphyURL: null,
-      wordText: wordItems[index].wordText,
-    }
+    const clickedImageText = wordItems[index].wordText
+    const animatedTextURL = await getAnimatedText(clickedImageText)
+    wordItems[index] = {...wordItems[index], giphyURL: animatedTextURL}
     setWords(wordItems)
   }
 
