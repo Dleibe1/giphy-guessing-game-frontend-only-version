@@ -16,3 +16,6 @@ Generate an API key for the GIPHY SDK from [https://developers.giphy.com/](https
 VITE_GIPHY_API_KEY=your-giphy-sdk-api-key
 ```
 
+navigate to http://localhost:5173/
+
+
