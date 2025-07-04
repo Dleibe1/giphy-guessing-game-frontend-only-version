@@ -10,7 +10,7 @@ npm install
 npm run dev
 ```
 
-Generate an API key for the GIPHY SDK from [https://developers.giphy.com/](https://developers.giphy.com/).  You must create an SDK API key for the animated text feature to work, you will not have access to animated text with a regular API key.  Create a .env file in the root directory that contains your GIPHY API key.
+Generate an API key for the GIPHY SDK from [https://developers.giphy.com/](https://developers.giphy.com/).  You must create an SDK API key for the animated text feature to work, you will not have access to animated text with a regular API key.  Create a .env file in the project's root directory that contains your GIPHY API key.
 
 ```.env
 VITE_GIPHY_API_KEY=your-giphy-sdk-api-key
