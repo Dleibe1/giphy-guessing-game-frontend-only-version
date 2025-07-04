@@ -38,7 +38,6 @@ const ImageList = () => {
           giphyURL = await getAnimatedText(wordText)
         }
       }
-      console.log(displayWordText)
       setWords([...words, { wordText, giphyURL }])
       setCurrentWord('')
     }
@@ -72,21 +71,20 @@ const ImageList = () => {
   }
 
   const imageList = words.map((word, i) => {
-    if (word.giphyURL !== null) {
-      return (
-        <img
-          className={`gif-image ${word.isReplacement ? '' : 'slide-left'}`}
-          key={`${i}${word.wordText}${word.giphyURL}`}
-          src={word.giphyURL}
-          onClick={(e) => handleImageClick(i, e)}
-          style={
-            word.isReplacement && word.width ? { width: `${word.width}px` } : {}
-          }
-        />
-      )
-    } else {
-      return <p key={`${i}${word.wordText}`}>{word.wordText}</p>
+    if (word.giphyURL === null) {
+      return null
     }
+    return (
+      <img
+        className={`gif-image ${word.isReplacement ? '' : 'slide-left'}`}
+        key={`${i}${word.wordText}${word.giphyURL}`}
+        src={word.giphyURL}
+        onClick={(e) => handleImageClick(i, e)}
+        style={
+          word.isReplacement && word.width ? { width: `${word.width}px` } : {}
+        }
+      />
+    )
   })
 
   return (

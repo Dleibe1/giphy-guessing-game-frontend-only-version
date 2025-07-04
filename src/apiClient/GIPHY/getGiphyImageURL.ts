@@ -5,7 +5,6 @@ const gf = new GiphyFetch(import.meta.env.VITE_GIPHY_API_KEY)
 export const getAnimatedText = async (wordText: string) => {
   try {
     const { data: gifs } = await gf.animate(wordText, { limit: 50 })
-    console.log(gifs)
     const imageURLs = gifs.map((gif) => {
       return gif.images.fixed_width.url
     })
