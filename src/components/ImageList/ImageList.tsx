@@ -1,98 +1,119 @@
 import React, { useState } from 'react'
-import { getWordData } from '../../apiClient/FreeDictionaryAPI/getWordData'
-import { shouldDisplayWordText } from '../../apiClient/FreeDictionaryAPI/shouldDisplayWordText'
 import {
+  getGifOrAnimatedText,
   getAnimatedText,
-  getGiphyImage,
-} from '../../apiClient/GIPHY/getGiphyImageURL'
+} from '../../apiClient/GIPHY/getURL'
+import { imagePreloader } from '../../services/imagePreloader'
 import './ImageList.scss'
 
 interface WordItem {
   wordText: string
   giphyURL: string | null
   isReplacement?: boolean
+  guessedWordText?: string
   width?: number
+  isAnimatedText?: boolean
 }
 
 const ImageList = () => {
-  const [currentWord, setCurrentWord] = useState('')
-  const [words, setWords] = useState<WordItem[]>([])
+  const [wordItems, setWordItems] = useState<WordItem[]>([])
 
-  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setCurrentWord(event.currentTarget.value)
+  const onInputChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ): Promise<void> => {
+    const currentWordItems = [...wordItems]
+    currentWordItems[index] = {
+      ...currentWordItems[index],
+      [event.currentTarget.name]: event.currentTarget.value,
+    }
+    if (
+      currentWordItems[index].wordText.toLowerCase() ===
+      currentWordItems[index].guessedWordText?.toLowerCase()
+    ) {
+      const containerDiv = event.currentTarget.closest('.word-item-container')
+      const imgElement = containerDiv?.querySelector('img')
+      const originalWidth = imgElement?.clientWidth || undefined
+      currentWordItems[index].width = originalWidth
+      currentWordItems[index].giphyURL = await getAnimatedText(
+        currentWordItems[index].wordText
+      )
+      currentWordItems[index].isReplacement = true
+      setWordItems(currentWordItems)
+      await imagePreloader(currentWordItems[index].giphyURL)
+      currentWordItems[index].isAnimatedText = true
+    }
+    setWordItems(currentWordItems)
   }
 
   const onKeyDown = async (
     event: React.KeyboardEvent<HTMLInputElement>
   ): Promise<void> => {
     if (event.key === ' ' || event.key === '.') {
-      const wordText = currentWord.trim()
-      let giphyURL = null
-      const wordData = await getWordData(wordText)
-      const displayWordText: boolean = shouldDisplayWordText(wordData)
-      if (displayWordText) {
-        giphyURL = await getAnimatedText(wordText)
-      } else {
-        giphyURL = await getGiphyImage(wordText)
-        if (giphyURL === undefined) {
-          giphyURL = await getAnimatedText(wordText)
-        }
-      }
-      setWords([...words, { wordText, giphyURL }])
-      setCurrentWord('')
+      const wordText = event.currentTarget.value
+      const { giphyURL, isAnimatedText } = await getGifOrAnimatedText(wordText)
+      const currentWordItems = [...wordItems]
+      currentWordItems.push(
+        { wordText, giphyURL, isAnimatedText },
+        { wordText: '', giphyURL: null }
+      )
+      setWordItems(currentWordItems)
     }
   }
 
   const handleImageClick = async (
-    index: number,
-    e: React.MouseEvent<HTMLImageElement>
+    event: React.MouseEvent<HTMLImageElement>,
+    index: number
   ) => {
-    const originalWidth = (e.target as HTMLImageElement).width
-    const wordItems = [...words]
+    const originalWidth = (event.target as HTMLImageElement).width
+    const currentWordItems = [...wordItems]
     const clickedImageText = wordItems[index].wordText
     const animatedTextURL = await getAnimatedText(clickedImageText)
-    await preloadImage(animatedTextURL)
-    wordItems[index] = {
+    await imagePreloader(animatedTextURL)
+    currentWordItems[index] = {
       ...wordItems[index],
       giphyURL: animatedTextURL,
       isReplacement: true,
       width: originalWidth,
+      isAnimatedText: true,
     }
-    setWords(wordItems)
+    setWordItems(currentWordItems)
   }
 
-  const preloadImage = (src: string): Promise<void> => {
-    return new Promise((resolve) => {
-      const img = new Image()
-      img.onload = () => resolve()
-      img.onerror = () => resolve() // Resolve anyway on error to prevent hanging
-      img.src = src
-    })
-  }
-
-  const imageList = words.map((word, i) => {
+  const imageList = wordItems.map((word, i) => {
     if (word.giphyURL === null) {
       return null
     }
     return (
-      <img
-        className={`gif-image ${word.isReplacement ? '' : 'slide-left'}`}
-        key={`${i}${word.wordText}${word.giphyURL}`}
-        src={word.giphyURL}
-        onClick={(e) => handleImageClick(i, e)}
-        style={
-          word.isReplacement && word.width ? { width: `${word.width}px` } : {}
-        }
-      />
+      <div className="word-item-container">
+        <img
+          className={`gif-image ${word.isReplacement ? '' : 'slide-left'}`}
+          key={`${i}${word.giphyURL}`}
+          src={word.giphyURL}
+          onClick={(event) => handleImageClick(event, i)}
+          style={
+            word.isReplacement && word.width ? { width: `${word.width}px` } : {}
+          }
+        />
+        {word.isAnimatedText !== true &&
+          word.wordText !== word.guessedWordText && (
+            <input
+              type="text"
+              name="guessedWordText"
+              value={word.guessedWordText}
+              onChange={(event) => onInputChange(event, i)}
+            />
+          )}
+      </div>
     )
   })
-
   return (
     <>
       <input
         type="text"
-        value={currentWord}
-        onChange={onInputChange}
+        name="wordText"
+        value={wordItems[wordItems.length - 1]?.wordText}
+        onChange={(event) => onInputChange(event, wordItems.length - 1)}
         onKeyDown={onKeyDown}
       />
       <div className="image-list">{imageList}</div>

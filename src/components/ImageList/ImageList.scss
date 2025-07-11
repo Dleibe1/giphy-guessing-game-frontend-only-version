@@ -1,5 +1,17 @@
 img {
+  height: 200px;
+  object-fit: contain;
+}
+
+.word-item-container {
   margin: 5px;
+  display: flex;
+  flex-direction: column;
+  max-width: min-content;
+  input {
+    width: 100%; /* Make input match width of parent */
+    box-sizing: border-box; /* Include padding and border in width calculation */
+  }
 }
 
 .image-list {
